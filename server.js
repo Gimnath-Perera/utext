@@ -1,11 +1,26 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const path = require('path');
+
 let usernames = [];
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.engine('.html', require('ejs').__express);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
+
+app.use(express.static(path.join(__dirname, '/public')));
+
+app.get('/', function (req, res) {
+  res.render('home');
 });
+
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/template.html');
+// });
+
 server.listen(process.env.PORT || 3000, () => {
   console.log('Sever started running at 3000');
 });
